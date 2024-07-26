@@ -1,95 +1,56 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useEffect, useRef } from "react";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const viewerRef = useRef(null);
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src =
+      "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js";
+    script.onload = () => {
+      window.pannellum.viewer(viewerRef.current, {
+        type: "equirectangular",
+        panorama: "/ambulance.jpg", // Panoramik görüntünüzün yolunu buraya ekleyin
+        autoLoad: true,
+        hotSpots: [
+          {
+            pitch: 10, // Yatay eksende butonun konumu
+            yaw: 100, // Dikey eksende butonun konumu
+            cssClass: "custom-hotspot", // Butona özel CSS sınıfı
+            createTooltipFunc: hotspotButton, // Buton oluşturma fonksiyonu
+          },
+        ],
+      });
+    };
+    document.head.appendChild(script);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    const link = document.createElement("link");
+    link.href =
+      "https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+    return () => {
+      document.head.removeChild(script);
+      document.head.removeChild(link);
+    };
+  }, []);
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+  // Hotspot oluşturma fonksiyonu
+  function hotspotButton(hotSpotDiv, args) {
+    hotSpotDiv.classList.add("custom-hotspot");
+    const button = document.createElement("button");
+    button.innerText = "Click Me";
+    button.style.padding = "10px";
+    button.style.background = "rgba(255, 255, 255, 0.8)";
+    button.style.border = "none";
+    button.style.borderRadius = "5px";
+    button.onclick = () => {
+      alert("Hotspot button clicked!");
+    };
+    hotSpotDiv.appendChild(button);
+  }
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+  return <div style={{ width: "100%", height: "500px" }} ref={viewerRef}></div>;
 }

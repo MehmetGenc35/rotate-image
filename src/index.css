@@ -1,0 +1,17 @@
+body{
+    max-width: 100%;
+    background-color: red;
+    height: 80vh;
+}
+html{
+    background-color: yellow;
+}
+body,
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+    scroll-behavior: smooth;
+}
+
